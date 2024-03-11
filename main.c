@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <assert.h>
+#include <stdlib.h>
 
 #define PDP11_MEMSIZE (64*1024)
 
@@ -113,9 +114,34 @@ void load_data(FILE * stream)
     }
 }
 
-int main()
+void load_file(const char * filename)
 {
-    load_data(stdin);
+    FILE * file = fopen(filename, "r");
+    if(file == NULL)
+    {
+        perror(filename);
+        exit(1);
+    }
+    load_data(file);
+    fclose(file);
+}
+
+void usage(const char * progname)
+{
+    printf("USAGE: %s file \n file - PDP-11 execution file \n", progname);
+}
+
+int main(int argc, char * argv[])
+{
     test_mem();
+
+    if(argc - 1 == 0)
+    {
+        usage(argv[0]);
+        exit(1);
+    }
+
+    load_file(argv[1]);
+
     return 0;
 }

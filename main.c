@@ -98,13 +98,24 @@ void w_write(adress adr, word val)
     mem[adr+1] = w & 0xFF;
 }
 
-void load_data()
+void load_data(FILE * stream)
 {
-
+    adress a;
+    int n;
+    byte num;
+    while(2 == fscanf(stream, "%x%x", &a, &n))
+    {        
+        for(int i = 0; i < n; i++)
+        {            
+            fscanf(stream, "%hhx", &num);
+            b_write(a+i, num);              
+        }
+    }
 }
 
 int main()
 {
+    load_data(stdin);
     test_mem();
     return 0;
 }

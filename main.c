@@ -25,7 +25,7 @@ void test_mem()
     b0 = 0x77;
     b_write(a, b0);
     bres = b_read(a);
-    fprintf(stderr, "a=%06o b0=%X bres=%X\n", a, b0, bres);
+    fprintf(stderr, "a=%06o b0=%x bres=%x\n", a, b0, bres);
     assert(b0 == bres);
 
     // пишем байт, читаем байт по НЕчетному адресу
@@ -40,7 +40,7 @@ void test_mem()
     // пишем слово, читаем слово
     fprintf(stderr, "Пишем и читаем слово\n");
     a = 2;        // другой адрес
-    w = 0x3456;
+    w = 0xabcd;
     w_write(a, w);
     wres = w_read(a);
     fprintf(stderr, "a=%06o w=%04x wres=%04x\n", a, w, wres);
@@ -68,7 +68,7 @@ void test_mem()
     b_write(a, b0);
     b_write(a+1, b1);
     wres = w_read(a);
-    fprintf(stderr, "a=%06o b1=%x b0=%x wres=%x\n", a, b1, b0, wres);
+    fprintf(stderr, "a=%06o b1=%02x b0=%02x wres=%x\n", a, b1, b0, wres);
     assert(w == wres);
 }
 
@@ -96,6 +96,11 @@ void w_write(adress adr, word val)
     mem[adr] = w & 0xFF;
     w = w >> 8;
     mem[adr+1] = w & 0xFF;
+}
+
+void load_data()
+{
+
 }
 
 int main()

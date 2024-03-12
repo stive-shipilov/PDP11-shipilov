@@ -124,6 +124,19 @@ void load_file(const char * filename)
     }
     load_data(file);
     fclose(file);
+
+}
+
+void mem_dump(adress adr, int size)
+{
+    int size_words = 2*sizeof(byte);
+
+    for(int i = 0; i < size / size_words; i++)
+    {
+        word number = w_read(adr + i*2);
+        printf("%06o: %06o %04x\n" , adr + i*2, number, number);
+    }
+    
 }
 
 void usage(const char * progname)
@@ -142,6 +155,7 @@ int main(int argc, char * argv[])
     }
 
     load_file(argv[1]);
+    
 
     return 0;
 }

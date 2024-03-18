@@ -3,12 +3,44 @@
 #include <stdlib.h>
 
 #define PDP11_MEMSIZE (64*1024)
+#define pc reg[7]
 
 typedef char byte;
 typedef int word;
 typedef word adress;
 
+typedef struct {
+    word mask;
+    word opcode;
+    char * name;
+    (void *)do_command(void);
+} Command;
+
+Command command[] = {
+    {0177777, 0000000, "halt", do_halt},
+    {0170000, 0010000, "mov", do_move},
+    {0170000, 0060000, "add", do_add},
+}
+
+void do_halt()
+{
+    printf("THE END!!!\n");
+    exit(0);
+}
+
+void do_halt()
+{
+    printf("halt");
+}
+
+void do_move()
+{
+    printf("move");
+}
+
 byte mem[PDP11_MEMSIZE];
+word reg[8];
+
 
 byte b_read(adress adr);
 void b_write(adress adr, byte val);
@@ -144,10 +176,9 @@ void usage(const char * progname)
     printf("USAGE: %s file \n file - PDP-11 execution file \n", progname);
 }
 
+
 int main(int argc, char * argv[])
 {
-    test_mem();
-
     if(argc - 1 == 0)
     {
         usage(argv[0]);
@@ -156,6 +187,5 @@ int main(int argc, char * argv[])
 
     load_file(argv[1]);
     
-
     return 0;
 }

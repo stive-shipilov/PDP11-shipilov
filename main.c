@@ -13,33 +13,39 @@ typedef struct {
     word mask;
     word opcode;
     char * name;
-    (void *)do_command(void);
+    void (*do_command)(void);
 } Command;
-
-Command command[] = {
-    {0177777, 0000000, "halt", do_halt},
-    {0170000, 0010000, "mov", do_move},
-    {0170000, 0060000, "add", do_add},
-}
 
 void do_halt()
 {
-    printf("THE END!!!\n");
+    printf("halt\n");
+    printf("THE END!\n");
     exit(0);
 }
 
-void do_halt()
+void do_add()
 {
-    printf("halt");
+    printf("add\n");
 }
 
 void do_move()
 {
-    printf("move");
+    printf("mov\n");
 }
 
-byte mem[PDP11_MEMSIZE];
-word reg[8];
+void do_unknown()
+{
+    printf("unknown\n");
+}
+
+Command command[3] = {
+    {0177777, 0000000, "halt", &do_halt},
+    {0170000, 0010000, "mov", &do_move},
+    {0170000, 0060000, "add", &do_add},
+};
+
+static byte mem[PDP11_MEMSIZE];
+static word reg[8];
 
 
 byte b_read(adress adr);
@@ -177,6 +183,36 @@ void usage(const char * progname)
 }
 
 
+void run()
+{
+    pc = 01000;
+
+    word w;     
+    while(1) {
+        w = w_read(pc);
+        printf("%06o %06o: ", pc, w);
+        //----------
+        long unsigned int i;
+
+        int LOOKED_FOR_COMMAND = 1;
+        int NO_LOOKED_FOR_COMMAND = 0;
+        int find_command = NO_LOOKED_FOR_COMMAND;
+        for(i = 0; i < sizeof(command) / sizeof(command[0]) ; i++)
+        {
+            if((w & command[i].mask) == command[i].opcode)
+            {
+                command[i].do_command();
+                find_command = LOOKED_FOR_COMMAND;
+                break;
+            }            
+        }
+        if(find_command != LOOKED_FOR_COMMAND)
+            do_unknown();
+        
+        pc += 2;
+    }
+}
+
 int main(int argc, char * argv[])
 {
     if(argc - 1 == 0)
@@ -187,5 +223,7 @@ int main(int argc, char * argv[])
 
     load_file(argv[1]);
     
+    run();
+
     return 0;
 }

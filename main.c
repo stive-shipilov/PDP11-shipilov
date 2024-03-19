@@ -182,7 +182,7 @@ void usage(const char * progname)
     printf("USAGE: %s file \n file - PDP-11 execution file \n", progname);
 }
 
-void find_command()
+void find_command(word w)
 {
     int LOOKED_FOR_COMMAND = 1;
     int NO_LOOKED_FOR_COMMAND = 0;
@@ -211,7 +211,7 @@ void run()
     while(1) {
         w = w_read(pc);
         printf("%06o %06o: ", pc, w);        
-        find_command();        
+        find_command(w);        
         pc += 2;
     }
 }

@@ -182,33 +182,36 @@ void usage(const char * progname)
     printf("USAGE: %s file \n file - PDP-11 execution file \n", progname);
 }
 
+void find_command()
+{
+    int LOOKED_FOR_COMMAND = 1;
+    int NO_LOOKED_FOR_COMMAND = 0;
+    int find_command = NO_LOOKED_FOR_COMMAND;
+
+    long unsigned int i;
+    for(i = 0; i < sizeof(command) / sizeof(command[0]) ; i++)
+    {
+        if((w & command[i].mask) == command[i].opcode)
+        {
+            command[i].do_command();
+            find_command = LOOKED_FOR_COMMAND;
+            break;
+        }            
+    }
+    if(find_command != LOOKED_FOR_COMMAND)
+        do_unknown();
+}
+
 
 void run()
 {
     pc = 01000;
+    word w;    
 
-    word w;     
     while(1) {
         w = w_read(pc);
-        printf("%06o %06o: ", pc, w);
-        //----------
-        long unsigned int i;
-
-        int LOOKED_FOR_COMMAND = 1;
-        int NO_LOOKED_FOR_COMMAND = 0;
-        int find_command = NO_LOOKED_FOR_COMMAND;
-        for(i = 0; i < sizeof(command) / sizeof(command[0]) ; i++)
-        {
-            if((w & command[i].mask) == command[i].opcode)
-            {
-                command[i].do_command();
-                find_command = LOOKED_FOR_COMMAND;
-                break;
-            }            
-        }
-        if(find_command != LOOKED_FOR_COMMAND)
-            do_unknown();
-        
+        printf("%06o %06o: ", pc, w);        
+        find_command();        
         pc += 2;
     }
 }
@@ -221,8 +224,7 @@ int main(int argc, char * argv[])
         exit(1);
     }
 
-    load_file(argv[1]);
-    
+    load_file(argv[1]);    
     run();
 
     return 0;

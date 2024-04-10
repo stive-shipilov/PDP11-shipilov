@@ -9,3 +9,9 @@ typedef int word;
 typedef word adress;
 
 extern word reg[8];
+
+//NZC
+extern byte N, Z, C;
+
+
+

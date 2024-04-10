@@ -4,9 +4,10 @@
 
 #include "commands.h"
 #include "memory_funcs.h"
+#include "load_funcs.h"
 #include "tests.h"
 #include "run.h"
-#include "load_funcs.h"
+
 
 
 

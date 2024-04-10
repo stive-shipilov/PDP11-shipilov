@@ -5,6 +5,9 @@
 #include "mods.h"
 
 Arg ss, dd;
+byte rl;
+word nn, xx;
+
 
 Arg get_mr(word w)
 {
@@ -44,3 +47,34 @@ Arg get_mr(word w)
 
     return res;
 }
+
+byte get_rl(word w)
+{
+    byte res; 
+
+    res = w & 7;
+    printf("R%d ", res);
+    return res;
+}
+
+word get_nn(word w)
+{
+    word res; 
+
+    res = w & 077;
+
+    printf("%06o ", pc - 2*res);
+    return res;
+
+}
+
+byte get_xx(word w)
+{
+    byte res; 
+
+    res = w & 0377;
+    printf("%06o ", pc + 2*res);
+    return res;
+
+}
+

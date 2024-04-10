@@ -8,16 +8,26 @@ typedef struct {
     word opcode;
     char * name;
     void (*do_command)(void);
-    int count_arg;
+    int arg;
 } Command;
 
-Command command[4] = {
-    {0177777, 0000000, "halt", do_halt, 0},
-    {0170000, 0010000, "mov", do_move, 2},
-    {0170000, 0060000, "add", do_add, 2},
+#define NOPARAMS 0
+#define HAS_DD 1
+#define HAS_SS 2
+#define HAS_NN 4
+#define HAS_RL  8
+#define HAS_XX 16
 
+Command command[8] = {
+    {0177777, 0000000, "halt", do_halt, NOPARAMS, },
+    {0170000, 0010000, "mov", do_move, HAS_SS | HAS_DD},
+    {0170000, 0060000, "add", do_add, HAS_SS | HAS_DD},
+    {0177000, 0077000, "sob", do_sob, HAS_NN | HAS_RL},
+    {0177000, 0005000, "clr", do_clr, HAS_DD},
+    {0177400, 0000400, "br", do_br, HAS_XX},
+    {0177400, 0001400, "beq", do_beq, HAS_XX},
 
-    {0000000, 0000000, "unknown", do_unknown, 0},
+    {0000000, 0000000, "unknown", do_unknown, NOPARAMS},
 };
 
 
@@ -35,9 +45,6 @@ Command find_command(word w)
     return z;
 }
 
-
-
-
 void run()
 {
     pc = 01000;
@@ -49,13 +56,25 @@ void run()
         pc += 2;
         Command cmd = find_command(w);
         printf("%s ", cmd.name);
-        if(cmd.count_arg > 0) 
+        if(cmd.arg & HAS_SS) 
         {
             ss = get_mr(w >> 6);
         }
-        if (cmd.count_arg == 2)
+        if(cmd.arg & HAS_DD) 
         {
             dd = get_mr(w);
+        }
+        if(cmd.arg & HAS_RL) 
+        {
+            rl = get_rl(w >> 6);
+        }
+        if(cmd.arg & HAS_NN) 
+        {
+            nn = get_nn(w);
+        }
+        if(cmd.arg & HAS_XX) 
+        {
+            xx = get_xx(w);
         }
         printf("\n");  
         cmd.do_command(); 

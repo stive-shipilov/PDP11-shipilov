@@ -4,7 +4,6 @@
 static byte mem[PDP11_MEMSIZE];
 word reg[8];
 
-
 byte b_read(adress adr)
 {
     return mem[adr];

@@ -5,13 +5,12 @@
 #include "mods.h"
 
 Arg ss, dd;
-byte rl;
+byte r;
 word nn, xx;
-
 
 Arg get_mr(word w)
 {
-    Arg res;    
+    Arg res;  
 
     int r = w & 7;
     int m = (w >> 3) & 7; 
@@ -31,13 +30,43 @@ Arg get_mr(word w)
 
         case 2:
             res.adr = reg[r];          
-            res.val = w_read(res.adr);  
-            reg[r] += 2;
+            res.val = w_read(res.adr);
+
+            if(byte_flag == BYTE && r != 6 && r != 7)
+                reg[r] += 1;
+            else
+                reg[r] += 2;          
             
             if (r == 7)
-                printf("#%o ", res.val);
+                printf("#%06o ", res.val);
             else
                 printf("(R%d)+ ", r);
+            break;
+        case 3:
+            res.adr = reg[r];
+            res.adr = w_read(res.adr);
+
+            if(r == 7)
+                printf("@#%o ", res.adr);
+            else
+                printf("@(R%d)+ ", r);
+
+            res.val = w_read(res.adr);
+            reg[r] += 2;
+            break;
+        case 6:
+            word x;
+            x = w_read(pc); 
+            pc += 2;
+            
+            res.adr = reg[r];   
+            res.val = w_read(res.adr);
+            res.adr = res.adr + x; 
+
+            if (r == 7)
+                printf("%06o ", res.adr);
+            else
+                printf("%d(R%d) ", x, r);
             break;
 
         default:
@@ -48,7 +77,7 @@ Arg get_mr(word w)
     return res;
 }
 
-byte get_rl(word w)
+byte get_r(word w)
 {
     byte res; 
 
@@ -77,4 +106,6 @@ byte get_xx(word w)
     return res;
 
 }
+
+
 

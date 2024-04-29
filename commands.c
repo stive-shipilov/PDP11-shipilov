@@ -3,10 +3,13 @@
 #include "memory_funcs.h"
 #include "mods.h"
 #include "flags.h"
+#include "load_funcs.h"
 #include "math.h"
 
 #define SET_ZERO 0
-#define SET_NEGATIVE 1
+#define SET_NEGATIVE -1
+#define SET_POSITIVE 1
+
 #define SET_CARRY 0x00000
 
 void do_halt()
@@ -44,8 +47,9 @@ void do_unknown()
 
 void do_clr()
 {
-    reg[dd.val] = 0;
-    set_N(!SET_NEGATIVE);
+    reg[dd.val] = 0x0000;
+    
+    set_N(SET_POSITIVE);
     set_Z(SET_ZERO);
     set_C(SET_CARRY);
 }
@@ -93,14 +97,18 @@ void do_bpl()
 
 void do_jsr()
 {
-    w_write(sp - 2, pc);
-    sp -= 2;
+    w_write(sp, reg[r]);
+    reg[r] = pc;
+    pc = dd.adr;
+    sp -= 2; 
 
-    pc = dd.adr;    
 }
 
 void do_rts()
 {
-    pc = w_read(sp);
+    pc = reg[r];
     sp += 2;
+    
+    reg[r] = w_read(sp);
+    w_write(sp, 0);    
 }

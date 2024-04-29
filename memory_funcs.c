@@ -13,7 +13,8 @@ byte b_read(adress adr)
 
 void b_write(adress adr, byte val)
 {
-    mem[adr] = val;
+    mem[adr] = val & 0xFF;
+    
 }
 
 word w_read (adress adr)
@@ -22,23 +23,25 @@ word w_read (adress adr)
     w = w << 8;
     w = w | (mem[adr] & 0xFF);
     return w;
+    
 }
 
 void reg_write(adress adr, word val)
 {
     if(byte_flag == BYTE)
     {
-        if((val >> 7) == 1 )
+        if(((val >> 7) & 0x0001) == 1 )
         {
             val = val | 0xFF00;
         }
-        else{
-            val = val & 0x00FF;
+        else
+        {
+            val = val & 0x000FF;
         }
     }
-    reg[adr] = val;
-    return;
     
+    reg[adr] = val & 0xFFFF;
+    return;    
 }
 
 void w_write(adress adr, word val)
@@ -47,11 +50,11 @@ void w_write(adress adr, word val)
     {
         reg_write(adr, val);
         return;
-    }    
+    }  
     word w = val;
-    mem[adr] = w & 0xFF;
+    mem[adr] = w & 0x000FF;
     w = w >> 8;
-    mem[adr+1] = w & 0xFF;
+    mem[adr+1] = w & 0x000FF;    
 }
 
 void reg_dump() {

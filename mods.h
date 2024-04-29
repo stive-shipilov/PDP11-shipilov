@@ -9,7 +9,7 @@ typedef struct {
 } Arg;
 
 extern Arg ss, dd;
-extern byte r;
+extern word r;
 extern word nn, xx;
 
 Arg get_mr(word w);

@@ -5,7 +5,7 @@
 #include "mods.h"
 
 Arg ss, dd;
-byte r;
+word r;
 word nn, xx;
 
 Arg get_mr(word w)
@@ -47,7 +47,7 @@ Arg get_mr(word w)
             res.adr = w_read(res.adr);
 
             if(r == 7)
-                printf("@#%o ", res.adr);
+                printf("@#%06o ", res.adr);
             else
                 printf("@(R%d)+ ", r);
 
@@ -55,18 +55,16 @@ Arg get_mr(word w)
             reg[r] += 2;
             break;
         case 6:
-            word x;
-            x = w_read(pc); 
+            word x = 0x0000;
+            x = w_read(pc);             
             pc += 2;
-            
-            res.adr = reg[r];   
+            res.adr = (reg[r] + x) & 0xFFFF;   
             res.val = w_read(res.adr);
-            res.adr = res.adr + x; 
 
             if (r == 7)
                 printf("%06o ", res.adr);
             else
-                printf("%d(R%d) ", x, r);
+                printf("%06o(R%d) ", x, r);
             break;
 
         default:
@@ -91,6 +89,7 @@ word get_nn(word w)
     word res; 
 
     res = w & 077;
+    
 
     printf("%06o ", pc - 2*res);
     return res;

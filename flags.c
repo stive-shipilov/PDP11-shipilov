@@ -17,7 +17,7 @@ void set_Z(word z_val)
     if(byte_flag == BYTE)
         Z = ((z_val & 0x00FF) == 0x0000);
     else
-        Z = ((z_val & 0xFFFF) == 0x0000);
+        Z = ((z_val & 0x0000FFFF) == 0x0000);
 }
 
 void set_C(word c_val)

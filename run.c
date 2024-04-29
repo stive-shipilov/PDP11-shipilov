@@ -78,14 +78,7 @@ void run()
             byte_flag = BYTE;
 
         printf("%s ", cmd.name);
-        if(cmd.arg & HAS_SS) 
-        {
-            ss = get_mr(w >> 6);
-        }
-        if(cmd.arg & HAS_DD) 
-        {
-            dd = get_mr(w);
-        }
+
         if(cmd.arg & HAS_RL) 
         {
             r = get_r(w >> 6);
@@ -94,6 +87,15 @@ void run()
         {
             r = get_r(w);
         }
+        if(cmd.arg & HAS_SS) 
+        {
+            ss = get_mr(w >> 6);
+        }
+        if(cmd.arg & HAS_DD) 
+        {
+            dd = get_mr(w);
+        }
+        
         if(cmd.arg & HAS_NN) 
         {
             nn = get_nn(w);
